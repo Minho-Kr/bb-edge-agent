@@ -1,0 +1,211 @@
+<Window x:Class="BBEdgeAgent.Wpf.Views.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings"
+        Icon="/Resources/bb.png"
+        Width="700" Height="700"
+        MinWidth="580" MinHeight="600"
+        WindowStartupLocation="CenterOwner"
+        Background="{StaticResource BgDark}"
+        FontFamily="Segoe UI"
+        Loaded="Window_Loaded">
+
+    <DockPanel>
+        <!-- Bottom button bar -->
+        <Border DockPanel.Dock="Bottom" Background="{StaticResource BgCard}" Padding="16,10">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Content="Cancel" Width="100" Height="36" Margin="0,0,8,0"
+                        Style="{StaticResource GhostButton}"
+                        Command="{Binding CancelCommand}"/>
+                <Button Content="Save" Width="110" Height="36"
+                        Style="{StaticResource GoldButton}"
+                        Command="{Binding SaveCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Tab control -->
+        <TabControl Background="{StaticResource BgDark}" BorderThickness="0">
+
+            <!-- ─── RFID Reader ─────────────────────────────────── -->
+            <TabItem Header="RFID Reader">
+                <ScrollViewer Margin="24,20,24,20" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,14" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Reader IP Address" Foreground="{StaticResource TextSecond}"
+                                       FontSize="12" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding ReaderIp, UpdateSourceTrigger=PropertyChanged}" Height="42"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,14" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Port" Foreground="{StaticResource TextSecond}"
+                                       FontSize="12" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding ReaderPort, UpdateSourceTrigger=PropertyChanged}" Height="42"/>
+                        </Grid>
+                        <Grid Margin="0,0,0,8" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="180"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0" Content="Test Connection" Height="42" Width="150"
+                                    HorizontalAlignment="Left"
+                                    Style="{StaticResource GhostButton}"
+                                    Command="{Binding TestReaderCommand}"/>
+                            <TextBlock Grid.Column="1" Text="{Binding ReaderMsg}" VerticalAlignment="Center"
+                                       Margin="12,0,0,0" FontSize="12">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                        <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ReaderOk}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Supabase ────────────────────────────────────── -->
+            <TabItem Header="Supabase">
+                <ScrollViewer Margin="24,20,24,20" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <!-- URL -->
+                        <TextBlock Text="Supabase Project URL" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding SupabaseUrl, UpdateSourceTrigger=PropertyChanged}" Height="42" Margin="0,0,0,12"/>
+
+                        <!-- Key -->
+                        <TextBlock Text="Anon / Service Key" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding SupabaseKey, UpdateSourceTrigger=PropertyChanged}" Height="42" Margin="0,0,0,12"/>
+
+                        <!-- Edge email -->
+                        <TextBlock Text="Edge Account Email (optional)" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding EdgeEmail, UpdateSourceTrigger=PropertyChanged}" Height="42" Margin="0,0,0,12"/>
+
+                        <!-- Edge password -->
+                        <TextBlock Text="Edge Account Password" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <PasswordBox x:Name="PassBox" Height="42" Margin="0,0,0,16"
+                                     PasswordChanged="PassBox_Changed"/>
+
+                        <!-- Buttons -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                            <Button Content="Test Supabase" Height="42" Width="140" Margin="0,0,8,0"
+                                    Style="{StaticResource GhostButton}"
+                                    Command="{Binding TestSupabaseCommand}"/>
+                            <Button Content="Load Branches" Height="42" Width="140"
+                                    Style="{StaticResource GhostButton}"
+                                    Command="{Binding LoadBranchesCommand}"/>
+                        </StackPanel>
+
+                        <!-- Status message -->
+                        <TextBlock Text="{Binding SupMsg}" FontSize="12" TextWrapping="Wrap" Margin="0,0,0,12">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding SupOk}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding SupMsg}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+
+                        <!-- Branch dropdown -->
+                        <TextBlock Text="Branch" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding Branches}"
+                                  SelectedItem="{Binding SelectedBranch}"
+                                  Height="42" Margin="0,0,0,12"/>
+
+                        <!-- Branch ID / Name (manual fallback) -->
+                        <TextBlock Text="Branch ID (UUID)" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding BranchId, UpdateSourceTrigger=PropertyChanged}" Height="42" Margin="0,0,0,12"/>
+
+                        <TextBlock Text="Branch Name" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <TextBox Text="{Binding BranchName, UpdateSourceTrigger=PropertyChanged}" Height="42" Margin="0,0,0,12"/>
+
+                        <!-- Service key hint -->
+                        <Border Background="#0A1A2A" CornerRadius="6" Padding="12,8" Margin="0,4,0,0">
+                            <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource TextMuted}"
+                                       Text="ℹ  For full access (bypass RLS), use the service role key from Supabase Dashboard → Settings → API → service_role. Leave Edge Email empty to use key as JWT directly."/>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Attendance ──────────────────────────────────── -->
+            <TabItem Header="Attendance">
+                <ScrollViewer Margin="24,20,24,20" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,14" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="Debounce Window (minutes)" Foreground="{StaticResource TextSecond}"
+                                       FontSize="12" VerticalAlignment="Center"/>
+                            <TextBox Grid.Column="1" Text="{Binding Debounce, UpdateSourceTrigger=PropertyChanged}" Height="42"/>
+                        </Grid>
+                        <CheckBox IsChecked="{Binding AutoStart}" Margin="0,0,0,8"
+                                  Content="Auto-start scanning on launch"/>
+                        <Border Background="#0A1A2A" CornerRadius="6" Padding="12,8" Margin="0,8,0,0">
+                            <TextBlock TextWrapping="Wrap" FontSize="11" Foreground="{StaticResource TextMuted}"
+                                       Text="Debounce prevents duplicate attendance entries from the same tag within the specified window."/>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ─── Security ────────────────────────────────────── -->
+            <TabItem Header="Security">
+                <ScrollViewer Margin="24,20,24,20" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel>
+                        <TextBlock Text="New PIN (4 digits)" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <PasswordBox x:Name="NewPinBox" MaxLength="4" Height="42" Width="120"
+                                     HorizontalAlignment="Left" Margin="0,0,0,12"
+                                     PasswordChanged="NewPin_Changed"/>
+
+                        <TextBlock Text="Confirm PIN" Foreground="{StaticResource TextSecond}" FontSize="12" Margin="0,0,0,4"/>
+                        <PasswordBox x:Name="ConfirmPinBox" MaxLength="4" Height="42" Width="120"
+                                     HorizontalAlignment="Left" Margin="0,0,0,14"
+                                     PasswordChanged="ConfirmPin_Changed"/>
+
+                        <Button Content="Change PIN" Height="36" Width="140"
+                                HorizontalAlignment="Left"
+                                Style="{StaticResource GhostButton}"
+                                Command="{Binding ChangePinCommand}"/>
+
+                        <TextBlock Text="{Binding PinMsg}" FontSize="12" Margin="0,10,0,0">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="Foreground" Value="{StaticResource ErrorBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding PinOk}" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding PinMsg}" Value="">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+        </TabControl>
+    </DockPanel>
+</Window>

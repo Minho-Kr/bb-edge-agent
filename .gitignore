@@ -1,0 +1,13 @@
+﻿# C# / .NET 빌드 결과물 및 VS 설정 제외
+[Bb]in/
+[Oo]bj/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Claude 폴더 및 환경변수 제외
+.claude/
+# CLAUDE.md
+.env

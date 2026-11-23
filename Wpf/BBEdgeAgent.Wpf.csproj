@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>BBEdgeAgent</AssemblyName>
+    <RootNamespace>BBEdgeAgent.Wpf</RootNamespace>
+    <Nullable>enable</Nullable>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>9</LangVersion>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\BBEdgeAgent.Core.csproj"/>
+  </ItemGroup>
+
+  <!-- RFID SDK DLLs: ADUtilsLib doesn't get transitively copied from Core, add manually -->
+  <ItemGroup>
+    <None Include="..\..\bb-ai-hub\rfid\ReaderSDK\ReaderSDK_Demo\bin\x64\Debug\ADUtilsLib.dll"
+          CopyToOutputDirectory="PreserveNewest">
+      <Link>ADUtilsLib.dll</Link>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\bb.png"/>
+  </ItemGroup>
+</Project>
